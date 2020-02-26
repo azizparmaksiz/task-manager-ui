@@ -1,0 +1,25 @@
+<div class="container">
+  <div class="row">
+    <button  class="btn btn-info" (click)="loadData()">Load Data</button>
+  </div>
+
+  <table  class="table tableFixHead" >
+    <thead>
+    <tr>
+      <th *ngFor="let col of columns">{{col.header}}</th>
+      <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let item of taskList; let index=index">
+      <td *ngFor="let col of columns" [ngSwitch]="col.field">
+        <span *ngSwitchCase="'createdAt'">{{item[col.field]|date:'dd-MM-yyyy hh:mm'}}</span>
+        <span *ngSwitchCase="'dueDate'">{{item[col.field]|date:'dd-MM-yyyy hh:mm'}}</span>
+        <span *ngSwitchDefault>{{item[col.field]||'-'}}</span>
+      </td>
+      <td>
+        <button class="btn btn-sm btn-outline btn-outline-danger" (click)="deleteTask(item.id,index)" >X</button></td>
+    </tr>
+    </tbody>
+  </table>
+</div>
