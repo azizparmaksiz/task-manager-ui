@@ -1,13 +1,16 @@
 <div class="container">
-  <div class="row">
-    <button  class="btn btn-info" (click)="loadData()">Load Data</button>
-  </div>
-
-  <table  class="table tableFixHead" >
+<div class="row">
+  <table  class=" table tableFixHead table-striped table-hover" >
     <thead>
+    <tr >
+      <th [attr.colspan]="columns.length+1">Total Task: {{taskList?.length}}</th>
+
+    </tr>
     <tr>
       <th *ngFor="let col of columns">{{col.header}}</th>
-      <th></th>
+      <th width="150px">
+        <button  class="btn btn-info" (click)="loadData()">Load</button>
+      </th>
     </tr>
     </thead>
     <tbody>
@@ -17,9 +20,72 @@
         <span *ngSwitchCase="'dueDate'">{{item[col.field]|date:'dd-MM-yyyy hh:mm'}}</span>
         <span *ngSwitchDefault>{{item[col.field]||'-'}}</span>
       </td>
-      <td>
-        <button class="btn btn-sm btn-outline btn-outline-danger" (click)="deleteTask(item.id,index)" >X</button></td>
+      <td width="150px" class=" ">
+        <button class=" m-1 btn btn-sm btn-outline btn-outline-danger" (click)="deleteTask(item.id,index)" ><i class="fa fa-trash"></i></button>
+      <button  class=" m-1 btn btn-sm btn-outline btn-outline-primary" data-toggle="modal" data-target="#exampleModal" (click)="openEditModal(item,'EDIT')">
+        <i class="fa fa-edit"></i>
+      </button>
+        <button  class=" m-1 btn btn-sm btn-outline btn-outline-warning" data-toggle="modal" data-target="#exampleModal" (click)="openEditModal(item,'POSTPONE')">
+        <i class="fa fa-history"></i>
+      </button>
+      </td>
     </tr>
     </tbody>
   </table>
+</div>
+
+</div>
+<!-- Button trigger modal -->
+
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content" *ngIf="modal.object">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel"> {{modal.object.title}}</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" >
+        <table class="table table-borderless ">
+          <tbody>
+          <tr>
+            <td>Task Id </td>
+            <td>{{modal.object.id}} </td>
+          </tr>
+          <ng-container *ngIf="modal.mode=='EDIT'">
+          <tr>
+            <td>Description</td>
+            <td><input type="text"  class="form-control col" [(ngModel)]="modal.object.description"></td>
+          </tr>
+          <tr>
+            <td>Status</td>
+            <td>
+              <select class="col" [(ngModel)]="modal.object.status">
+              <option value="WORKING">WORKING</option>
+              <option value="PENDING">PENDING</option>
+              <option value="COMPLETED">COMPLETED</option>
+            </select>
+            </td>
+          </tr>
+          </ng-container>
+          <ng-container *ngIf="modal.mode=='POSTPONE'">
+            <tr>
+              <td>Postpone</td>
+              <td><p-calendar [(ngModel)]="modal.object.dueDate" showTime="true" [showIcon]="true"></p-calendar></td>
+            </tr>
+          </ng-container>
+          </tbody>
+        </table>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" #closebutton>Close</button>
+        <button *ngIf="modal.mode=='EDIT'" type="button" class="btn btn-primary" (click)="update()">Update</button>
+        <button *ngIf="modal.mode=='POSTPONE'" type="button" class="btn btn-primary" (click)="postpone()">Save</button>
+      </div>
+    </div>
+  </div>
 </div>
